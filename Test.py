@@ -1,5 +1,12 @@
+# Test.py tests the algorithm on four representatives left out of the training dataset
+# 2-6-2020
+__author__ = 'Shan Wang'
+
+
 import string
 
+
+# main method
 if __name__ == '__main__':
     chars = string.punctuation + '…'
 
