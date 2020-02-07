@@ -1,3 +1,8 @@
+# Train.py trains the algorithm by extracting the words from tweets
+# 2-6-2020
+__author__ = '20wang'
+
+
 import string
 
 
@@ -11,6 +16,7 @@ def buildDataset():
     return file
 
 
+# gets words from tweets, records frequency of each word for Democrats and Republicans
 def findWords(file):
     dictionary = []
     coef = 0
@@ -19,8 +25,6 @@ def findWords(file):
     wordCount = ['words:', '0', '0']
 
     for line in file:
-        if len(line) > 1:
-            print(line[1])
         if line[0] == 'Democrat':
             coef = 1
         if line[0] == 'Republican':
@@ -36,21 +40,19 @@ def findWords(file):
                         if word.lower() == dictionary[x][0]:
                             dictionary[x][coef] = str(int(dictionary[x][coef]) + 1)
                             tempList.remove(word)
-                            print(dictionary[x])
                             wordCount[coef] = str(int(wordCount[coef]) + 1)
-                            print(wordCount)
                 for word in tempList:
                     if word[0:5] != 'https':
                         dictionary.append([word.lower(), '0', '0'])
                         dictionary[len(dictionary) - 1][coef] = '1'
-                        print(dictionary[len(dictionary) - 1])
                         wordCount[coef] = str(int(wordCount[coef]) + 1)
-                        print(wordCount)
         coef = 0
     dictionary.append(wordCount)
+
     return dictionary
 
 
+# assigns scores to words based on frequency for members of each party (- if Democrat, + if Republican)
 def wordScore(file):
     counts = file[len(file) - 1]
     del file[len(file) - 1]
@@ -58,18 +60,17 @@ def wordScore(file):
     words = [line.rstrip('\n') for line in open('words_alpha.txt')]
     newFile = []
 
-    x = 0
-    while x < len(file):
+    for x in range(len(file)):
         if file[x][0] in words:
-            print(file[x][0])
-            newFile.append([file[x][0], str(
-                1000000 * (float(file[x][2]) / float(counts[2]) - float(file[x][1]) / float(counts[1])))])
-        del file[x]
-        x += 1
+            newFile.append([file[x][0],
+                            str(1000000 * (float(file[x][2]) / float(counts[2]) -
+                                           float(file[x][1]) / float(counts[1])))])
 
     return newFile
 
 
+# removes duplicates in the scored words, caused by flaws in the findWords method
+# "if you can't tie a knot, tie a lot"
 def cleanUp(file):
     l = 0
     while l < len(file):
@@ -82,13 +83,15 @@ def cleanUp(file):
     return file
 
 
+# writes the list of words to a csv file
 def writeFile(file):
-    f = open('TestWords', 'w')
+    f = open('ScoredWords', 'w')
     for line in file:
         f.write(','.join(line) + '\n')
     f.close()
 
 
+# main method
 if __name__ == '__main__':
     file = buildDataset()
     dictionary = findWords(file)

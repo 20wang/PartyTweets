@@ -1,6 +1,13 @@
+# plots ideology scores (based on voting record) from GovTrack.us against twitter scores
+# 5-10-2018
+__author__ = 'Shan Wang'
+
+
 import string
 import matplotlib.pyplot as plt
 
+
+# importes govtrack scores and stores them in a 2D list ([name, score])
 def importScores():
     file = [line.rstrip('\n') for line in open('GovtrackScores.csv')]
     for i in range(0, len(file)):
@@ -14,6 +21,7 @@ def importScores():
     return scores
 
 
+# imports legislator names and twitter handles
 def importHandles():
     file = [line.rstrip('\n') for line in open('legislators-current.csv')]
     for i in range(0, len(file)):
@@ -27,6 +35,7 @@ def importHandles():
     return handles
 
 
+# imports twitter database
 def importTweets():
     file = [line.rstrip('\n') for line in open('ExtractedTweets.csv')]
     for i in range(0, len(file)):
@@ -36,6 +45,7 @@ def importTweets():
     return file
 
 
+# imports scored words
 def importWords():
     file = [line.rstrip('\n') for line in open('ScoredWords')]
     for i in range(0, len(file)):
@@ -44,6 +54,8 @@ def importWords():
     return file
 
 
+# assigns a twitter score to each rep
+# returns a 2D list ([name, twitter, party, ideology score, twitter score])
 def scoreReps(scores, handles, tweets, words):
     chars = string.punctuation + '…'
     reps = []
@@ -123,6 +135,7 @@ def plot():
     plt.show()
 
 
+# main method
 if __name__ == '__main__':
     """
     scores = importScores()
